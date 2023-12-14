@@ -46,6 +46,7 @@ public class RoleServiceImpl implements RoleService {
     public GeneralResponse deleteRoleById(Integer id) {
         Role role = roleRepository.findByIdAndIsDeleted(id,Boolean.FALSE).orElseThrow(() -> new RuntimeException("Role not found"));
         role.setIsDeleted(Boolean.TRUE);
+        roleRepository.save(role);
         return new GeneralResponse("Role deleted successfully", HttpStatus.OK.value());
     }
 }

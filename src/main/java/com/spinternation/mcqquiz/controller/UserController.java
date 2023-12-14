@@ -5,9 +5,11 @@ import com.spinternation.mcqquiz.response.GeneralResponse;
 import com.spinternation.mcqquiz.response.UserResponse;
 import com.spinternation.mcqquiz.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -40,5 +42,10 @@ public class UserController {
     @DeleteMapping("/{id}")
     public ResponseEntity<GeneralResponse> deleteUserById(@PathVariable("id") Long id){
         return ResponseEntity.ok(userService.deleteUserById(id));
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<GeneralResponse> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex){
+        return new ResponseEntity<>(new GeneralResponse("Username or email already exists", HttpStatus.CONFLICT.value()),HttpStatus.CONFLICT);
     }
 }
